@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FU Safari Bedah Anak</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blue:#185FA5;--blue-light:#E6F1FB;--blue-mid:#378ADD;
+  --bg:#ffffff;--bg2:#f8f9fa;--bg3:#f1f3f5;
+  --text:#1a1a1a;--text2:#6c757d;--text3:#adb5bd;
+  --border:#dee2e6;--border2:#ced4da;
+  --danger:#E24B4A;--success-bg:#EAF3DE;--success-text:#27500A;
+  --warn-bg:#FAEEDA;--warn-text:#854F0B;
+  --radius:8px;--radius-lg:12px;
+  --font:'Segoe UI',system-ui,sans-serif;
+}
+@media(prefers-color-scheme:dark){
+  :root{--bg:#1a1a1a;--bg2:#252525;--bg3:#2e2e2e;--text:#f0f0f0;--text2:#a0a0a0;--text3:#666;--border:#3a3a3a;--border2:#4a4a4a;}
+}
+body{font-family:var(--font);background:var(--bg3);color:var(--text);min-height:100vh}
+.header{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:var(--bg);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:40}
+.header h1{font-size:15px;font-weight:600;color:var(--blue);letter-spacing:0.4px;text-transform:uppercase}
+.header p{font-size:12px;color:var(--text2);margin-top:1px}
+.tabs-wrap{background:var(--bg);border-bottom:1px solid var(--border);overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tabs{display:flex;padding:0 16px;gap:2px;min-width:max-content}
+.tab{padding:8px 14px;font-size:12px;cursor:pointer;border:none;border-bottom:2px solid transparent;color:var(--text2);white-space:nowrap;background:none;transition:color .15s;font-family:var(--font)}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--blue);border-bottom-color:var(--blue);font-weight:600}
+.main{padding:16px;max-width:900px;margin:0 auto}
+.btn-add{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px;border:2px dashed var(--border2);border-radius:var(--radius-lg);background:none;cursor:pointer;font-size:14px;color:var(--blue);margin-bottom:16px;transition:background .15s;font-family:var(--font)}
+.btn-add:hover{background:var(--bg2)}
+.btn-primary{background:var(--blue);color:#fff;border:none;padding:9px 18px;border-radius:var(--radius);font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:opacity .15s;font-family:var(--font)}
+.btn-primary:hover{opacity:.88}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed}
+.btn-secondary{background:none;color:var(--text);border:1px solid var(--border2);padding:8px 16px;border-radius:var(--radius);font-size:13px;cursor:pointer;transition:background .15s;font-family:var(--font);display:inline-flex;align-items:center;gap:6px}
+.btn-secondary:hover{background:var(--bg2)}
+.btn-danger{background:none;color:var(--danger);border:1px solid var(--danger);padding:6px 12px;border-radius:var(--radius);font-size:12px;cursor:pointer;font-family:var(--font)}
+.btn-mode{flex:1;padding:10px 8px;border:1px solid var(--border2);border-radius:var(--radius);font-size:12px;cursor:pointer;background:var(--bg);color:var(--text2);text-align:center;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:4px;font-family:var(--font)}
+.btn-mode:hover{border-color:var(--blue-mid);color:var(--blue)}
+.btn-mode.active{background:var(--blue-light);border-color:var(--blue);color:var(--blue);font-weight:600}
+.btn-mode i{font-size:20px}
+.btn-mode span:last-child{font-size:10px;opacity:.7}
+.patient-card{border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px;margin-bottom:10px;background:var(--bg);transition:border-color .15s}
+.patient-card:hover{border-color:var(--border2)}
+.patient-name{font-size:14px;font-weight:600;color:var(--blue)}
+.patient-meta{font-size:12px;color:var(--text2);margin-top:2px}
+.badge{display:inline-block;padding:2px 8px;border-radius:var(--radius);font-size:11px;font-weight:500}
+.badge-preop{background:var(--warn-bg);color:var(--warn-text)}
+.badge-postop{background:var(--success-bg);color:var(--success-text)}
+.badge-konservative{background:var(--blue-light);color:var(--blue)}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:16px;z-index:100}
+.modal{background:var(--bg);border-radius:var(--radius-lg);width:100%;max-width:760px;margin:auto;box-shadow:0 8px 32px rgba(0,0,0,.2)}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);background:var(--bg);border-radius:var(--radius-lg) var(--radius-lg) 0 0}
+.modal-header h2{font-size:15px;font-weight:600}
+.modal-body{padding:20px;max-height:75vh;overflow-y:auto}
+.modal-footer{display:flex;justify-content:flex-end;gap:8px;padding:14px 20px;border-top:1px solid var(--border)}
+.form-section{margin-bottom:22px}
+.form-section-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:var(--text2);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.form-group{display:flex;flex-direction:column;gap:4px}
+.form-group.full{grid-column:1/-1}
+label{font-size:12px;color:var(--text2);font-weight:500}
+input,select,textarea{width:100%;font-size:13px;padding:8px 10px;border:1px solid var(--border2);border-radius:var(--radius);background:var(--bg);color:var(--text);font-family:var(--font);transition:border-color .15s}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--blue-mid)}
+textarea{resize:vertical;min-height:72px;line-height:1.5}
+.lab-title{font-size:11px;color:var(--text2);margin:10px 0 6px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px}
+.upload-area{border:2px dashed var(--border2);border-radius:var(--radius);padding:16px;text-align:center;cursor:pointer;font-size:12px;color:var(--text2);position:relative;transition:border-color .15s}
+.upload-area:hover{border-color:var(--blue-mid)}
+.upload-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.upload-area i{font-size:26px;display:block;margin-bottom:6px;opacity:.4}
+.photo-preview{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.photo-thumb{width:80px;height:80px;object-fit:cover;border-radius:var(--radius);border:1px solid var(--border);cursor:pointer}
+.photo-thumb-radio{width:100px;height:80px;object-fit:contain;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg2)}
+.regio-row{display:flex;gap:8px;align-items:flex-start;margin-bottom:8px}
+.regio-row select{flex:0 0 175px}
+.regio-row textarea{flex:1;min-height:60px}
+.regio-row .rm-btn{flex:0 0 auto;padding:8px;border:1px solid var(--border2);border-radius:var(--radius);background:none;cursor:pointer;color:var(--text2)}
+.ai-output{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;font-size:13px;line-height:1.8;white-space:pre-wrap;margin-top:12px;color:var(--text);max-height:460px;overflow-y:auto;font-family:'Consolas','Courier New',monospace}
+.loading-wrap{text-align:center;padding:48px 16px;color:var(--text2)}
+.spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.copy-btn{display:inline-flex;align-items:center;gap:6px;background:none;border:1px solid var(--border2);padding:7px 14px;border-radius:var(--radius);font-size:12px;cursor:pointer;color:var(--text2);margin-top:10px;font-family:var(--font)}
+.copy-btn:hover{background:var(--bg2)}
+.fab{position:fixed;bottom:24px;right:24px;background:var(--blue);color:#fff;border:none;border-radius:var(--radius-lg);padding:11px 20px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px;box-shadow:0 4px 16px rgba(24,95,165,.4);z-index:50;font-family:var(--font)}
+.mode-selector{display:flex;gap:10px;margin-bottom:16px}
+.empty-state{text-align:center;padding:56px 16px;color:var(--text2)}
+.empty-state i{font-size:40px;display:block;margin-bottom:12px;opacity:.3}
+.empty-state p{font-size:13px;line-height:1.6}
+.section-note{font-size:11px;color:var(--text3);font-style:italic;margin-bottom:10px}
+.card-actions{display:flex;gap:6px;flex-shrink:0}
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+const RUANGAN=['Semua','Bangsal Anak','PICU','NICU','IGD','Graha','PM','Makalam','RKH','Gentala','Neuro','Teratai','Bangsal Depan','Bangsal Belakang'];
+const DPJP_LIST=['dr. Willy Hardy Marpaung, Sp.BA, FIAPS','dr. Miftahurrahmah, Sp.BA, FIAPS'];
+const STATUS_LIST=['Pre-Op','Post-Op','Konservatif','Observasi'];
+const REGIO_LIST=['Regio Abdomen','Regio Iliaca Dextra','Regio Iliaca Sinistra','Regio Epigastrium','Regio Umbilikus','Regio Hipogastrium','Regio Coli','Regio Inguinal Dextra','Regio Inguinal Sinistra','Regio Skrotum / Testis','Regio Perineum / Anus','Regio Thoraks','Regio Ekstremitas Superior','Regio Ekstremitas Inferior','Regio Lumbal','Regio Kepala & Leher','Lainnya'];
+const STORAGE_KEY='fu_bedah_anak_v3';
+
+let patients=[],activeTab='Semua',showModal=false,editId=null;
+let showFUModal=false,fuPatientId=null,fuText='',fuLoading=false,fuMode='soap';
+let showExportModal=false;
+
+function loadData(){try{patients=JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');}catch(e){patients=[];}}
+function saveData(){localStorage.setItem(STORAGE_KEY,JSON.stringify(patients));}
+
+const DEF={
+  ku:'Tampak sakit sedang, gizi kesan cukup',
+  kesadaran:'Compos Mentis, GCS E4V5M6',
+  kepala:'Normochepal, jejas (-), deformitas (-)',
+  mata:'Refleks cahaya (+/+), Sklera Ikterik (-/-), Konjungtiva Anemis (-/-), pupil isokor 3mm/3mm, edema palpebra (-/-)',
+  hidung:'Epistaksis (-/-), sekret (-/-), deviasi septum (-)',
+  mulut:'Perdarahan (-), sianosis (-), mukosa bibir lembab, tonsil T1/T1',
+  telinga:'Otorrhea (-/-), perdarahan (-/-)',
+  leher:'Pembesaran KGB colli (-), deviasi trakea (-), massa (-)',
+  thoraks:'Pergerakan dinding dada simetris kanan = kiri, retraksi (-)',
+  cor:'BJ I/II reguler, murmur (-), gallop (-)',
+  pulmo:'Suara napas vesikuler (+/+), wheezing (-/-), rhonki (-/-)',
+  abdomen_sg:'',
+  ext_sup_dx:'Akral hangat, CRT <2 detik, edema (-), sianosis (-)',
+  ext_sup_sin:'Akral hangat, CRT <2 detik, edema (-), sianosis (-)',
+  ext_inf_dx:'Akral hangat, CRT <2 detik, edema (-), sianosis (-)',
+  ext_inf_sin:'Akral hangat, CRT <2 detik, edema (-), sianosis (-)'
+};
+
+function emptyForm(){
+  return {
+    id:Date.now().toString(),
+    ruangan:'Bangsal Anak',nama:'',umur:'',jk:'Laki-laki',dpjp:DPJP_LIST[0],
+    diagnosis:'',status:'Post-Op',pod:'',
+    keluhan_utama:'',rps:'',rpd:'DM (-)\nHT (-)\nAsma (-)\nRiwayat alergi obat disangkal\nRiwayat operasi sebelumnya disangkal\nRiwayat rawat inap sebelumnya disangkal',
+    rpk:'Riwayat penyakit serupa dalam keluarga disangkal\nRiwayat atopi dalam keluarga disangkal',
+    rso:'Pasien tinggal bersama orang tua. Ayah bekerja sebagai ... Ibu sebagai ... Kesan ekonomi ...',
+    ttv:{t:'',hr:'',rr:'',spo2:'',td:''},
+    sg:Object.assign({},DEF),
+    lab:{wbc:'',hgb:'',rbc:'',hct:'',plt:'',ureum:'',creatinin:'',sgot:'',sgpt:'',albumin:'',gds:'',natrium:'',kalium:'',chlorida:'',bil_total:'',bil_direk:'',bil_indirek:'',bga:'',pt:'',aptt:'',inr:''},
+    radiologi_text:'',
+    radiologi_photos:[],
+    lokalisata:[{regio:'Regio Abdomen',temuan:'Inspeksi: \nPalpasi: \nAuskultasi: \nPerkusi: '}],
+    terapi_non_farma:'Monitoring tanda vital tiap 4-6 jam\nMonitoring diuresis\nMonitoring drain (jika ada)\nPosisi kepala 30°',
+    terapi_farma:'',
+    catatan:'',
+    photos:[]
+  };
+}
+
+// Form state stored separately to avoid re-render bugs
+let F=emptyForm();
+
+function getFiltered(){return activeTab==='Semua'?patients:patients.filter(p=>p.ruangan===activeTab);}
+function getBadge(s){if(s==='Pre-Op')return 'badge-preop';if(s==='Post-Op')return 'badge-postop';return 'badge-konservative';}
+
+function render(){
+  const filtered=getFiltered();
+  const today=new Date().toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  let h=`
+  <div class="header">
+    <div><h1><i class="ti ti-stethoscope"></i> FU Safari Bedah Anak</h1><p>${today}</p></div>
+    <div style="font-size:13px;color:var(--text2)">${patients.length} pasien tersimpan</div>
+  </div>
+  <div class="tabs-wrap"><div class="tabs">
+    ${RUANGAN.map(r=>`<button class="tab ${activeTab===r?'active':''}" onclick="setTab('${r}')">${r}</button>`).join('')}
+  </div></div>
+  <div class="main">
+    <button class="btn-add" onclick="openAdd()"><i class="ti ti-plus"></i> Tambah Pasien</button>`;
+
+  if(filtered.length===0){
+    h+=`<div class="empty-state"><i class="ti ti-user-off"></i><p>Belum ada pasien di ruangan ini.<br>Tekan tombol di atas saat menemukan pasien baru.</p></div>`;
+  } else {
+    filtered.forEach((p,i)=>{
+      h+=`<div class="patient-card">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
+          <div style="flex:1;min-width:0">
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+              <span class="patient-name">${i+1}. ${p.nama||'Tanpa nama'}</span>
+              <span class="badge ${getBadge(p.status)}">${p.status}${p.pod?' POD '+p.pod:''}</span>
+            </div>
+            <div class="patient-meta">${p.umur||'-'} — ${p.jk} — ${p.ruangan}</div>
+            <div class="patient-meta" style="font-style:italic">${p.diagnosis||'-'}</div>
+            <div class="patient-meta">DPJP: ${p.dpjp}</div>
+          </div>
+          <div class="card-actions">
+            <button class="btn-secondary" style="padding:6px 10px;font-size:12px" onclick="openFU('${p.id}')"><i class="ti ti-file-text"></i> FU</button>
+            <button class="btn-secondary" style="padding:6px 10px;font-size:12px" onclick="openEdit('${p.id}')"><i class="ti ti-edit"></i></button>
+            <button class="btn-danger" onclick="delPasien('${p.id}')"><i class="ti ti-trash"></i></button>
+          </div>
+        </div>
+      </div>`;
+    });
+  }
+  h+=`</div>`;
+  if(patients.length>0) h+=`<button class="fab" onclick="openExport()"><i class="ti ti-download"></i> Ekspor semua</button>`;
+  if(showModal) h+=modalHTML();
+  if(showFUModal) h+=fuModalHTML();
+  if(showExportModal) h+=exportModalHTML();
+  document.getElementById('app').innerHTML=h;
+  bindEvents();
+}
+
+function fv(id){const el=document.getElementById(id);return el?el.value:'';}
+
+function modalHTML(){
+  const sg=F.sg;
+  const labFields=[
+    ['hematologi',['wbc','WBC','rbc','RBC','hgb','HGB','hct','HCT','plt','PLT','pt','PT','aptt','APTT','inr','INR']],
+    ['ginjal',['ureum','Ureum','creatinin','Creatinin','gds','GDS']],
+    ['hepar',['sgot','SGOT','sgpt','SGPT','albumin','Albumin']],
+    ['bilirubin',['bil_total','Bil. Total','bil_direk','Bil. Direk','bil_indirek','Bil. Indirek']],
+    ['elektrolit',['natrium','Natrium','kalium','Kalium','chlorida','Chlorida']]
+  ];
+
+  let labHTML='';
+  const labLabels={hematologi:'Hematologi',ginjal:'Ginjal & Metabolik',hepar:'Fungsi Hepar',bilirubin:'Bilirubin',elektrolit:'Elektrolit'};
+  labFields.forEach(([cat,fields])=>{
+    labHTML+=`<div class="lab-title">${labLabels[cat]}</div><div class="form-grid">`;
+    for(let i=0;i<fields.length;i+=2){
+      const k=fields[i],l=fields[i+1];
+      labHTML+=`<div class="form-group"><label>${l}</label><input id="lab_${k}" value="${esc(F.lab[k])}" placeholder="..."></div>`;
+    }
+    labHTML+=`</div>`;
+  });
+  labHTML+=`<div class="lab-title">BGA / Lainnya</div><div class="form-group"><textarea id="lab_bga" placeholder="pH, pCO2, pO2, HCO3, BE, SaO2...">${esc(F.lab.bga)}</textarea></div>`;
+
+  const regioHTML=F.lokalisata.map((r,i)=>`
+    <div class="regio-row" id="regio_row_${i}">
+      <select id="regio_sel_${i}">${REGIO_LIST.map(v=>`<option ${r.regio===v?'selected':''}>${v}</option>`).join('')}</select>
+      <textarea id="regio_txt_${i}" placeholder="Inspeksi: ...\nPalpasi: ...\nAuskultasi: ...\nPerkusi: ...">${esc(r.temuan)}</textarea>
+      <button class="rm-btn" onclick="removeRegio(${i})"><i class="ti ti-minus"></i></button>
+    </div>`).join('');
+
+  const photoPreview=(F.photos||[]).map((src,i)=>`<img src="${src}" class="photo-thumb" title="Klik untuk hapus" onclick="removePhoto(${i})" alt="foto klinis">`).join('');
+  const radioPreview=(F.radiologi_photos||[]).map((src,i)=>`<img src="${src}" class="photo-thumb-radio" title="Klik untuk hapus" onclick="removeRadioPhoto(${i})" alt="foto radiologi">`).join('');
+
+  return `<div class="modal-overlay" id="modal_overlay">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <h2><i class="ti ti-user-plus"></i> ${editId?'Edit':'Tambah'} Pasien</h2>
+      <button class="btn-secondary" style="padding:6px 10px" onclick="closeModal()"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+
+      <div class="form-section">
+        <div class="form-section-title">Identitas Pasien</div>
+        <div class="form-grid">
+          <div class="form-group full"><label>Nama Lengkap / Inisial *</label><input id="f_nama" value="${esc(F.nama)}" placeholder="By. Ny. Misnawati / Muslim Kairun Bin Rojali"></div>
+          <div class="form-group"><label>Umur</label><input id="f_umur" value="${esc(F.umur)}" placeholder="17 tahun / 15 hari"></div>
+          <div class="form-group"><label>Jenis Kelamin</label><select id="f_jk">${['Laki-laki','Perempuan'].map(v=>`<option ${F.jk===v?'selected':''}>${v}</option>`).join('')}</select></div>
+          <div class="form-group"><label>Ruangan</label><select id="f_ruangan">${RUANGAN.filter(r=>r!=='Semua').map(v=>`<option ${F.ruangan===v?'selected':''}>${v}</option>`).join('')}</select></div>
+          <div class="form-group"><label>DPJP</label><select id="f_dpjp">${DPJP_LIST.map(v=>`<option ${F.dpjp===v?'selected':''}>${v}</option>`).join('')}</select></div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">Diagnosis & Status</div>
+        <div class="form-grid">
+          <div class="form-group full"><label>Diagnosis (utama + dd jika ada)</label><input id="f_diagnosis" value="${esc(F.diagnosis)}" placeholder="Atresia ani post op kolostomi / Suspek Appendisitis Akut perforasi"></div>
+          <div class="form-group"><label>Status</label><select id="f_status">${STATUS_LIST.map(v=>`<option ${F.status===v?'selected':''}>${v}</option>`).join('')}</select></div>
+          <div class="form-group"><label>POD / Hari Rawat ke-</label><input id="f_pod" value="${esc(F.pod)}" placeholder="18"></div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">Anamnesis</div>
+        <div class="form-grid">
+          <div class="form-group full"><label>Keluhan Utama</label><input id="f_ku" value="${esc(F.keluhan_utama)}" placeholder="Nyeri perut kanan bawah"></div>
+          <div class="form-group full"><label>Riwayat Penyakit Sekarang (RPS)</label><textarea id="f_rps" placeholder="Pasien datang dengan keluhan... sejak ... hari/jam SMRS. Nyeri dirasakan... Keluhan penyerta: mual (+/−), muntah (+/−), demam (+/−)...">${esc(F.rps)}</textarea></div>
+          <div class="form-group full"><label>Riwayat Penyakit Dahulu (RPD)</label><textarea id="f_rpd" style="min-height:80px">${esc(F.rpd)}</textarea></div>
+          <div class="form-group full"><label>Riwayat Penyakit Keluarga (RPK)</label><textarea id="f_rpk" style="min-height:56px">${esc(F.rpk)}</textarea></div>
+          <div class="form-group full"><label>Riwayat Sosial & Ekonomi</label><textarea id="f_rso" style="min-height:56px">${esc(F.rso)}</textarea></div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">Tanda-Tanda Vital</div>
+        <div class="form-grid">
+          <div class="form-group"><label>Suhu (°C)</label><input id="f_t" value="${esc(F.ttv.t)}" placeholder="36.5"></div>
+          <div class="form-group"><label>HR / Nadi (x/mnt)</label><input id="f_hr" value="${esc(F.ttv.hr)}" placeholder="145"></div>
+          <div class="form-group"><label>RR (x/mnt)</label><input id="f_rr" value="${esc(F.ttv.rr)}" placeholder="50"></div>
+          <div class="form-group"><label>SpO2</label><input id="f_spo2" value="${esc(F.ttv.spo2)}" placeholder="99% room air"></div>
+          <div class="form-group"><label>TD (mmHg)</label><input id="f_td" value="${esc(F.ttv.td)}" placeholder="128/70 / tidak terukur"></div>
+          <div class="form-group"><label>BB / TB</label><input id="f_bbtb" value="${esc(F.ttv.bbtb||'')}" placeholder="10 kg / 80 cm"></div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">Status Generalisata</div>
+        <p class="section-note">Nilai default sudah terisi normal. Ubah jika ada temuan abnormal.</p>
+        <div class="form-grid">
+          <div class="form-group"><label>Keadaan Umum</label><input id="sg_ku" value="${esc(sg.ku||DEF.ku)}"></div>
+          <div class="form-group"><label>Kesadaran</label><input id="sg_kes" value="${esc(sg.kesadaran||DEF.kesadaran)}"></div>
+          <div class="form-group full"><label>Kepala</label><input id="sg_kep" value="${esc(sg.kepala||DEF.kepala)}"></div>
+          <div class="form-group full"><label>Mata</label><input id="sg_mata" value="${esc(sg.mata||DEF.mata)}"></div>
+          <div class="form-group"><label>Hidung</label><input id="sg_hid" value="${esc(sg.hidung||DEF.hidung)}"></div>
+          <div class="form-group"><label>Mulut</label><input id="sg_mul" value="${esc(sg.mulut||DEF.mulut)}"></div>
+          <div class="form-group"><label>Telinga</label><input id="sg_tel" value="${esc(sg.telinga||DEF.telinga)}"></div>
+          <div class="form-group"><label>Leher</label><input id="sg_lek" value="${esc(sg.leher||DEF.leher)}"></div>
+          <div class="form-group full"><label>Thoraks (umum)</label><input id="sg_tho" value="${esc(sg.thoraks||DEF.thoraks)}"></div>
+          <div class="form-group"><label>Cor</label><input id="sg_cor" value="${esc(sg.cor||DEF.cor)}"></div>
+          <div class="form-group"><label>Pulmo</label><input id="sg_pul" value="${esc(sg.pulmo||DEF.pulmo)}"></div>
+          <div class="form-group full"><label>Abdomen (Status Generalisata)</label><textarea id="sg_abd" style="min-height:60px" placeholder="Inspeksi: Datar, simetris, distensi (-)\nAuskultasi: BU (+) normal\nPalpasi: Supel, nyeri tekan (-), defans muskular (-)\nPerkusi: Timpani 4 kuadran">${esc(sg.abdomen_sg||DEF.abdomen_sg)}</textarea></div>
+          <div class="form-group"><label>Ext. Sup. Dextra</label><input id="sg_esd" value="${esc(sg.ext_sup_dx||DEF.ext_sup_dx)}"></div>
+          <div class="form-group"><label>Ext. Sup. Sinistra</label><input id="sg_ess" value="${esc(sg.ext_sup_sin||DEF.ext_sup_sin)}"></div>
+          <div class="form-group"><label>Ext. Inf. Dextra</label><input id="sg_eid" value="${esc(sg.ext_inf_dx||DEF.ext_inf_dx)}"></div>
+          <div class="form-group"><label>Ext. Inf. Sinistra</label><input id="sg_eis" value="${esc(sg.ext_inf_sin||DEF.ext_inf_sin)}"></div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">Pemeriksaan Penunjang — Laboratorium</div>
+        ${labHTML}
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">Pemeriksaan Penunjang — Radiologi</div>
+        <div class="form-group" style="margin-bottom:10px"><label>Hasil / Interpretasi Radiologi</label>
+          <textarea id="f_radiologi" placeholder="Foto polos abdomen 3 posisi: ...\nUSG abdomen: ...\nCT Scan abdomen dengan kontras: ...">${esc(F.radiologi_text)}</textarea>
+        </div>
+        <label style="font-size:12px;color:var(--text2);font-weight:500">Upload Foto Radiologi</label>
+        <div class="upload-area" style="margin-top:4px" id="radio_area">
+          <i class="ti ti-radio"></i>
+          <span>Klik atau seret foto rontgen / USG / CT Scan</span>
+          <input type="file" accept="image/*" multiple id="radio_input">
+        </div>
+        <div class="photo-preview" id="radio_preview">${radioPreview}</div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">Status Lokalisata</div>
+        <div id="regio_list">${regioHTML}</div>
+        <button class="btn-secondary" style="font-size:12px;margin-top:6px" onclick="addRegio()"><i class="ti ti-plus"></i> Tambah Regio</button>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">Terapi</div>
+        <div class="form-grid">
+          <div class="form-group full"><label>Non Farmakologi</label><textarea id="f_nonfarma" style="min-height:80px">${esc(F.terapi_non_farma)}</textarea></div>
+          <div class="form-group full"><label>Farmakologi</label><textarea id="f_farma" style="min-height:80px" placeholder="IVFD RL 20 tpm\nAmpicillin 3x... mg/kgBB IV\nMetronidazole 3x... mg/kgBB IV\nKetorolac 3x... mg IV\n...">${esc(F.terapi_farma)}</textarea></div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">Catatan / Rencana</div>
+        <div class="form-group"><textarea id="f_catatan" placeholder="Rencana operasi: ...\nKonsul: ...\nEdukasi keluarga: ...">${esc(F.catatan)}</textarea></div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">Foto Klinis</div>
+        <div class="upload-area" id="photo_area">
+          <i class="ti ti-camera"></i>
+          <span>Klik atau seret foto klinis pasien</span>
+          <input type="file" accept="image/*" multiple id="photo_input">
+        </div>
+        <div class="photo-preview" id="photo_preview">${photoPreview}</div>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal()">Batal</button>
+      <button class="btn-primary" onclick="savePatient()"><i class="ti ti-check"></i> Simpan Pasien</button>
+    </div>
+  </div></div>`;
+}
+
+function fuModalHTML(){
+  const p=patients.find(x=>x.id===fuPatientId);
+  if(!p)return '';
+  return `<div class="modal-overlay" id="fu_overlay">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <h2><i class="ti ti-file-text"></i> Generate Laporan — ${p.nama}</h2>
+      <button class="btn-secondary" style="padding:6px 10px" onclick="closeFU()"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="mode-selector">
+        <button class="btn-mode ${fuMode==='soap'?'active':''}" onclick="setFUMode('soap')">
+          <i class="ti ti-clipboard-list"></i><span>FU Harian (SOAP)</span><span>ringkas, visite pagi</span>
+        </button>
+        <button class="btn-mode ${fuMode==='lengkap'?'active':''}" onclick="setFUMode('lengkap')">
+          <i class="ti ti-file-description"></i><span>Laporan Lengkap</span><span>admission / presentasi</span>
+        </button>
+      </div>
+      ${fuLoading?`<div class="loading-wrap"><div class="spinner"></div><p>Membuat laporan...</p></div>`:''}
+      ${fuText&&!fuLoading?`<div class="ai-output">${esc(fuText)}</div><button class="copy-btn" onclick="copyFU()"><i class="ti ti-copy"></i> Salin teks</button>`:''}
+      ${!fuLoading&&!fuText?`<div style="color:var(--text2);font-size:13px;padding:8px 0;line-height:1.7">
+        ${fuMode==='soap'?'<strong>FU Harian (SOAP)</strong>: laporan follow-up ringkas harian untuk visite pagi dan presentasi singkat.':'<strong>Laporan Lengkap</strong>: format admission dengan anamnesis lengkap, status generalisata, penunjang, status lokalisata, dan terapi.'}<br><br>
+        Klik <strong>Generate</strong> untuk membuat laporan otomatis.
+      </div>`:''}
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeFU()">Tutup</button>
+      <button class="btn-primary" onclick="doGenerateFU('${p.id}')" ${fuLoading?'disabled':''}><i class="ti ti-sparkles"></i> ${fuText?'Generate Ulang':'Generate'}</button>
+    </div>
+  </div></div>`;
+}
+
+function exportModalHTML(){
+  const all=patients.map((p,i)=>buildRaw(p,i+1)).join('\n\n'+'─'.repeat(50)+'\n\n');
+  return `<div class="modal-overlay" id="exp_overlay">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <h2><i class="ti ti-download"></i> Ekspor Semua Pasien</h2>
+      <button class="btn-secondary" style="padding:6px 10px" onclick="closeExport()"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="ai-output" id="export_out">${esc(all)}</div>
+      <button class="copy-btn" onclick="copyExport()"><i class="ti ti-copy"></i> Salin semua</button>
+    </div>
+    <div class="modal-footer"><button class="btn-secondary" onclick="closeExport()">Tutup</button></div>
+  </div></div>`;
+}
+
+function buildRaw(p,no){
+  const today=new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'});
+  const sg=p.sg||{};
+  let t=`${no}. Nama   : ${p.nama}\n   Umur   : ${p.umur||'-'}\n   JK     : ${p.jk}\n   Ruangan: ${p.ruangan}\n   DPJP   : ${p.dpjp}\n   Diagnosis: ${p.diagnosis}${p.pod?' ('+p.status+' POD '+p.pod+')':' ('+p.status+')'}\n\n`;
+  if(p.keluhan_utama)t+=`Keluhan Utama: ${p.keluhan_utama}\n`;
+  if(p.rps)t+=`RPS: ${p.rps}\n`;
+  if(p.rpd)t+=`RPD:\n${p.rpd}\n`;
+  if(p.rpk)t+=`RPK:\n${p.rpk}\n`;
+  if(p.rso)t+=`RSE:\n${p.rso}\n`;
+  t+=`\nTTV:\nT: ${p.ttv.t||'-'}°C  HR: ${p.ttv.hr||'-'} x/mnt  RR: ${p.ttv.rr||'-'} x/mnt  SpO2: ${p.ttv.spo2||'-'}  TD: ${p.ttv.td||'-'} mmHg`;
+  if(p.ttv.bbtb)t+=`  BB/TB: ${p.ttv.bbtb}`;
+  t+='\n';
+  const lab=p.lab||{};
+  const hasLab=Object.values(lab).some(v=>v&&v.toString().trim());
+  if(hasLab){
+    t+=`\nPemeriksaan Penunjang Laboratorium (${today}):\n`;
+    const hema=['wbc','WBC','rbc','RBC','hgb','HGB','hct','HCT','plt','PLT'];
+    let hemaLine=hema.filter((_,i)=>i%2===0).map(k=>lab[k]?`${hema[hema.indexOf(k)+1]}: ${lab[k]}`:'').filter(Boolean).join(' | ');
+    if(hemaLine)t+=`Hematologi: ${hemaLine}\n`;
+    if(lab.pt||lab.aptt)t+=`Hemostasis: PT ${lab.pt||'-'} | APTT ${lab.aptt||'-'} | INR ${lab.inr||'-'}\n`;
+    if(lab.ureum||lab.creatinin)t+=`Ginjal: Ureum ${lab.ureum||'-'} | Creatinin ${lab.creatinin||'-'} | GDS ${lab.gds||'-'}\n`;
+    if(lab.sgot||lab.sgpt)t+=`Hepar: SGOT ${lab.sgot||'-'} | SGPT ${lab.sgpt||'-'} | Albumin ${lab.albumin||'-'}\n`;
+    if(lab.bil_total)t+=`Bilirubin: Total ${lab.bil_total||'-'} | Direk ${lab.bil_direk||'-'} | Indirek ${lab.bil_indirek||'-'}\n`;
+    if(lab.natrium||lab.kalium)t+=`Elektrolit: Na ${lab.natrium||'-'} | K ${lab.kalium||'-'} | Cl ${lab.chlorida||'-'}\n`;
+    if(lab.bga)t+=`BGA: ${lab.bga}\n`;
+  }
+  if(p.radiologi_text)t+=`\nRadiologi:\n${p.radiologi_text}\n`;
+  if(p.lokalisata&&p.lokalisata.length>0){
+    t+=`\nStatus Lokalisata:\n`;
+    p.lokalisata.forEach(r=>{if(r.temuan.trim())t+=`${r.regio}:\n${r.temuan}\n`;});
+  }
+  t+=`\nTerapi:\nNon Farmakologi:\n${p.terapi_non_farma||'-'}\n\nFarmakologi:\n${p.terapi_farma||'-'}`;
+  if(p.catatan)t+=`\n\nCatatan/Rencana:\n${p.catatan}`;
+  return t;
+}
+
+function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function bindEvents(){
+  const ov=document.getElementById('modal_overlay');
+  if(ov)ov.addEventListener('click',function(e){if(e.target===ov)closeModal();});
+  const fov=document.getElementById('fu_overlay');
+  if(fov)fov.addEventListener('click',function(e){if(e.target===fov)closeFU();});
+  const eov=document.getElementById('exp_overlay');
+  if(eov)eov.addEventListener('click',function(e){if(e.target===eov)closeExport();});
+
+  const pi=document.getElementById('photo_input');
+  if(pi)pi.addEventListener('change',function(){handleUpload(this.files,'photos','photo_preview','photo-thumb');});
+  const ri=document.getElementById('radio_input');
+  if(ri)ri.addEventListener('change',function(){handleUpload(this.files,'radiologi_photos','radio_preview','photo-thumb-radio');});
+}
+
+function handleUpload(files,key,previewId,cls){
+  const arr=Array.from(files);if(!arr.length)return;
+  let done=0;
+  arr.forEach(file=>{
+    const r=new FileReader();
+    r.onload=e=>{
+      if(!F[key])F[key]=[];
+      F[key].push(e.target.result);
+      done++;
+      if(done===arr.length){
+        const prev=document.getElementById(previewId);
+        if(prev){
+          if(key==='photos') prev.innerHTML=F.photos.map((s,i)=>`<img src="${s}" class="${cls}" onclick="removePhoto(${i})" title="Klik untuk hapus" alt="foto">`).join('');
+          else prev.innerHTML=F.radiologi_photos.map((s,i)=>`<img src="${s}" class="${cls}" onclick="removeRadioPhoto(${i})" title="Klik untuk hapus" alt="foto radiologi">`).join('');
+        }
+      }
+    };
+    r.readAsDataURL(file);
+  });
+}
+
+function removePhoto(i){F.photos.splice(i,1);render();}
+function removeRadioPhoto(i){F.radiologi_photos.splice(i,1);render();}
+
+function collectForm(){
+  F.nama=fv('f_nama').trim();
+  F.umur=fv('f_umur');F.jk=fv('f_jk');F.ruangan=fv('f_ruangan');F.dpjp=fv('f_dpjp');
+  F.diagnosis=fv('f_diagnosis');F.status=fv('f_status');F.pod=fv('f_pod');
+  F.keluhan_utama=fv('f_ku');F.rps=fv('f_rps');F.rpd=fv('f_rpd');F.rpk=fv('f_rpk');F.rso=fv('f_rso');
+  F.ttv={t:fv('f_t'),hr:fv('f_hr'),rr:fv('f_rr'),spo2:fv('f_spo2'),td:fv('f_td'),bbtb:fv('f_bbtb')};
+  F.sg={ku:fv('sg_ku'),kesadaran:fv('sg_kes'),kepala:fv('sg_kep'),mata:fv('sg_mata'),hidung:fv('sg_hid'),mulut:fv('sg_mul'),telinga:fv('sg_tel'),leher:fv('sg_lek'),thoraks:fv('sg_tho'),cor:fv('sg_cor'),pulmo:fv('sg_pul'),abdomen_sg:fv('sg_abd'),ext_sup_dx:fv('sg_esd'),ext_sup_sin:fv('sg_ess'),ext_inf_dx:fv('sg_eid'),ext_inf_sin:fv('sg_eis')};
+  ['wbc','rbc','hgb','hct','plt','pt','aptt','inr','ureum','creatinin','gds','sgot','sgpt','albumin','bil_total','bil_direk','bil_indirek','natrium','kalium','chlorida'].forEach(k=>{F.lab[k]=fv('lab_'+k);});
+  F.lab.bga=fv('lab_bga');
+  F.radiologi_text=fv('f_radiologi');
+  F.terapi_non_farma=fv('f_nonfarma');F.terapi_farma=fv('f_farma');F.catatan=fv('f_catatan');
+  // collect regio
+  F.lokalisata=F.lokalisata.map((_,i)=>({regio:fv('regio_sel_'+i)||REGIO_LIST[0],temuan:fv('regio_txt_'+i)}));
+}
+
+function setTab(t){activeTab=t;render();}
+function openAdd(){F=emptyForm();editId=null;showModal=true;render();}
+function closeModal(){showModal=false;render();}
+function openFU(id){fuPatientId=id;fuText='';fuLoading=false;fuMode='soap';showFUModal=true;render();}
+function closeFU(){showFUModal=false;fuText='';render();}
+function setFUMode(m){fuMode=m;fuText='';render();}
+function openExport(){showExportModal=true;render();}
+function closeExport(){showExportModal=false;render();}
+function openEdit(id){
+  const p=patients.find(x=>x.id===id);if(!p)return;
+  F=JSON.parse(JSON.stringify(p));
+  if(!F.sg)F.sg=Object.assign({},DEF);
+  if(!F.lab)F.lab=emptyForm().lab;
+  if(!F.lokalisata||!F.lokalisata.length)F.lokalisata=[{regio:'Regio Abdomen',temuan:''}];
+  if(!F.radiologi_photos)F.radiologi_photos=[];
+  editId=id;showModal=true;render();
+}
+function delPasien(id){if(!confirm('Hapus pasien ini?'))return;patients=patients.filter(p=>p.id!==id);saveData();render();}
+function addRegio(){collectForm();F.lokalisata.push({regio:'Regio Abdomen',temuan:'Inspeksi: \nPalpasi: \nAuskultasi: \nPerkusi: '});render();}
+function removeRegio(i){collectForm();F.lokalisata.splice(i,1);if(!F.lokalisata.length)F.lokalisata=[{regio:'Regio Abdomen',temuan:''}];render();}
+
+function savePatient(){
+  collectForm();
+  if(!F.nama){alert('Nama pasien tidak boleh kosong.');return;}
+  if(editId){const idx=patients.findIndex(p=>p.id===editId);if(idx>-1)patients[idx]=JSON.parse(JSON.stringify(F));}
+  else{patients.push(JSON.parse(JSON.stringify(F)));}
+  saveData();showModal=false;render();
+}
+
+async function doGenerateFU(id){
+  const p=patients.find(x=>x.id===id);if(!p)return;
+  fuLoading=true;fuText='';render();
+  const raw=buildRaw(p,1);
+  const today=new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'});
+
+  let prompt='';
+  if(fuMode==='soap'){
+    prompt=`Kamu adalah dokter bedah anak senior yang mengisi laporan Follow-Up (FU) harian saat visite pagi di RSUD Indonesia. Buat laporan FU harian format SOAP yang ringkas, padat, dan klinis.
+
+FORMAT WAJIB:
+[No]. [Nama] / [JK] / [Umur]
+DPJP: [nama]
+Diagnosis: [diagnosis] [status POD jika ada]
+
+S: [keluhan subjektif hari ini — demam, nyeri, mual, BAB, output drain/stoma, toleransi diet, dll]
+
+TTV:
+T: ...°C  HR: ... x/mnt  RR: ... x/mnt  SpO2: ...  TD: ... mmHg
+
+O:
+KU: ... / Kesadaran: ...
+Pemeriksaan Lokalis: [temuan relevan per regio]
+Lab (${today}): [nilai penting — tandai (H) jika di atas normal, (L) jika di bawah normal]
+Radiologi: [jika ada]
+
+A: [kesan klinis — kondisi membaik/stabil/memburuk, perkembangan pasca operasi]
+
+P:
+Non Farmakologi:
+• ...
+Farmakologi:
+• ...
+Rencana: [follow up lab/radiologi/tindakan selanjutnya]
+
+DATA PASIEN:
+${raw}
+
+Tulis bahasa Indonesia medis baku. Untuk pasien bedah anak, perhatikan: toleransi minum/diet, output stoma/drain, kondisi luka, hasil lab terutama Hb dan infeksi. Nilai lab neonatus berbeda dengan anak besar — sesuaikan interpretasi.`;
+  } else {
+    prompt=`Kamu adalah dokter co-ass bedah anak yang membuat laporan pasien lengkap untuk presentasi kasus atau laporan masuk bangsal. Buat laporan LENGKAP dan komprehensif.
+
+FORMAT WAJIB (ikuti persis termasuk spasi dan tanda baca):
+
+[No]. Nama   : [nama]
+ Umur   : [umur]
+ Jenis Kelamin : [JK]
+Keluhan Utama : [keluhan utama]
+RPS : [narasi lengkap kronologis — onset, lokasi, kualitas nyeri, kuantitas, faktor yang memperberat/memperingan, gejala penyerta. Kembangkan menjadi narasi klinis koheren jika data singkat]
+
+RPD :
+ [tiap item satu baris dengan (+) atau (-)]
+RPK :
+ [tiap item satu baris]
+Riwayat Sosial-Ekonomi :
+ [isi]
+
+STATUS GENERALISATA
+ Keadaan umum : [KU]
+ Kesadaran : [kesadaran]
+TD : [TD] mmHg  N : [HR] x/i  T : [Suhu]°C  RR : [RR] x/i  SpO₂ : [SpO2]
+[Jika ada BB/TB: BB: ... kg  TB: ... cm]
+Kepala : [temuan]
+Mata : [temuan]
+Hidung : [temuan]
+Mulut : [temuan]
+Telinga : [temuan]
+Leher : [temuan]
+Thoraks : [temuan]
+• Cor : [temuan]
+• Pulmo : [temuan]
+Abdomen :
+ Inspeksi : [temuan]
+ Auskultasi : [temuan]
+ Palpasi : [temuan]
+ Hepar : [temuan]
+ Lien : [temuan]
+ Perkusi : [temuan]
+Ekstremitas :
+Superior :
+ • Dextra : [temuan]
+ • Sinistra : [temuan]
+Inferior :
+ • Dextra : [temuan]
+ • Sinistra : [temuan]
+
+PEMERIKSAAN PENUNJANG
+Laboratorium (${today}) :
+[Tampilkan semua lab yang diisi, dikelompokkan. Tandai nilai abnormal dengan (H) atau (L). Untuk neonatus gunakan nilai normal neonatus.]
+
+[Jika ada radiologi:]
+Radiologi :
+[hasil dan interpretasi]
+
+STATUS LOKALISATA
+[Untuk setiap regio yang diisi:]
+Pemeriksaan Lokalis [Nama Regio]
+Inspeksi : [temuan]
+Palpasi : [temuan]
+[Auskultasi dan Perkusi jika relevan]
+[Tanda-tanda khusus bedah jika ada: McBurney, Rovsing, Psoas, Obturator, Blumberg, dll]
+
+Diagnosis :
+[Diagnosis utama]
+[dd: ... jika ada]
+
+Terapi :
+Non Farmakologi
+ • [poin per poin]
+
+Farmakologi
+[obat — nama, dosis, rute, frekuensi]
+
+Rencana :
+[tindakan selanjutnya]
+
+DATA PASIEN:
+${raw}
+
+PENTING:
+- Bahasa Indonesia medis baku
+- Kembangkan RPS jadi narasi klinis koheren dan sistematis
+- Untuk pasien bedah anak: perhatikan usia, BB, dan dosis obat berbasis BB
+- Tandai nilai lab abnormal (H)/(L) dengan referensi nilai normal yang sesuai usia
+- Gunakan tanda klinis baku: (+), (-), (-/-), (+/+)
+- Jika ada data tidak diisi, tulis "-" bukan mengarang data`;
+  }
+
+  try{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1800,messages:[{role:'user',content:prompt}]})});
+    const data=await resp.json();
+    fuText=data.content?.map(c=>c.text||'').join('')||'Gagal generate. Coba lagi.';
+  }catch(e){fuText='Error: '+e.message;}
+  fuLoading=false;render();
+}
+
+function copyFU(){navigator.clipboard.writeText(fuText).then(()=>{const b=document.querySelector('.copy-btn');if(b){b.innerHTML='<i class="ti ti-check"></i> Tersalin!';setTimeout(()=>render(),1500);}});}
+function copyExport(){const el=document.getElementById('export_out');if(!el)return;navigator.clipboard.writeText(el.innerText).then(()=>{const b=document.querySelector('.copy-btn');if(b){b.innerHTML='<i class="ti ti-check"></i> Tersalin!';setTimeout(()=>render(),1500);}});}
+
+loadData();render();
+</script>
+</body>
+</html>
